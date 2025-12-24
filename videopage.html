@@ -64,8 +64,6 @@
       cursor: pointer;
     }
 
-    #hint { opacity: 0.9; margin-top: 14px; }
-
     /* Video screen */
     #player {
       display: none;
@@ -81,25 +79,12 @@
       background: #000;
     }
 
-    /* Tap-to-play overlay */
+    /* Invisible tap-to-play overlay (still clickable) */
     #overlay {
       position: absolute;
       inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0,0,0,0.25);
-      color: white;
-      font-size: 22px;
-      user-select: none;
       cursor: pointer;
-    }
-
-    #overlay .btn {
-      padding: 14px 18px;
-      border: 2px solid rgba(255,255,255,0.9);
-      border-radius: 12px;
-      background: rgba(0,0,0,0.35);
+      /* no background, no text */
     }
 
     /* Mobile: stack image above code */
@@ -134,7 +119,6 @@
       <br>
       <button id="submitBtn">OK</button>
       <p id="error" style="color:#ff6b6b;"></p>
-      <p id="hint">Feloldás után koppints a lejátszáshoz.</p>
     </div>
   </div>
 </div>
@@ -145,9 +129,7 @@
     A böngésződ nem támogatja a videó lejátszást.
   </video>
 
-  <div id="overlay">
-    <div class="btn">▶ Koppints a lejátszáshoz</div>
-  </div>
+  <div id="overlay"></div>
 </div>
 
 <script>
@@ -170,6 +152,9 @@
 
       vid.pause();
       vid.currentTime = 0;
+
+      // Make sure overlay is present when video first appears
+      overlay.style.display = "block";
     } else {
       error.textContent = "Hibás kód";
     }
@@ -180,6 +165,7 @@
     if (e.key === "Enter") unlock();
   });
 
+  // Tap anywhere (overlay) to start
   overlay.addEventListener("click", async () => {
     try {
       await vid.play();
@@ -189,9 +175,10 @@
     }
   });
 
+  // If user pauses mid-way, show overlay again so they can tap to resume
   vid.addEventListener("pause", () => {
     if (vid.currentTime < (vid.duration || Infinity)) {
-      overlay.style.display = "flex";
+      overlay.style.display = "block";
     }
   });
 
