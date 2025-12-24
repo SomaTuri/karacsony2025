@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="hu">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
@@ -78,29 +79,28 @@
 
 <div id="gate">
   <div>
-    <h2>Enter code</h2>
+    <h2>Írd be a kódot!</h2>
     <input type="password" id="codeInput" inputmode="numeric" />
     <br>
-    <button id="submitBtn">Submit</button>
+    <button id="submitBtn">OK</button>
     <p id="error" style="color:#ff6b6b;"></p>
-    <p id="hint">After unlocking, tap to play.</p>
+    <p id="hint">Feloldás után koppints a lejátszáshoz.</p>
   </div>
 </div>
 
 <div id="player">
   <video id="secretVideo" controls playsinline preload="metadata">
-    <!-- Use the full URL to remove any path weirdness -->
     <source src="https://somaturi.github.io/karacsony2025/output.mp4" type="video/mp4">
-    Your browser does not support the video tag.
+    A böngésződ nem támogatja a videó lejátszást.
   </video>
 
   <div id="overlay">
-    <div class="btn">▶ Tap to play</div>
+    <div class="btn">▶ Koppints a lejátszáshoz</div>
   </div>
 </div>
 
 <script>
-  const correctCode = "4729";
+  const correctCode = "202526711";
 
   const gate = document.getElementById("gate");
   const input = document.getElementById("codeInput");
@@ -117,32 +117,31 @@
       gate.style.display = "none";
       player.style.display = "block";
 
-      // Always start paused until user taps overlay
       vid.pause();
       vid.currentTime = 0;
     } else {
-      error.textContent = "Incorrect code";
+      error.textContent = "Hibás kód";
     }
   }
 
   btn.addEventListener("click", unlock);
-  input.addEventListener("keydown", (e) => { if (e.key === "Enter") unlock(); });
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") unlock();
+  });
 
-  // Tap-to-play (user gesture)
   overlay.addEventListener("click", async () => {
     try {
-      await vid.play();  // allowed because it's triggered by a tap
+      await vid.play();
       overlay.style.display = "none";
     } catch (e) {
-      // If something blocks playback, leave overlay visible
       console.log(e);
     }
   });
 
-  // If user pauses, show overlay again (optional)
   vid.addEventListener("pause", () => {
-    // Only show overlay if not at the very end
-    if (vid.currentTime < (vid.duration || Infinity)) overlay.style.display = "flex";
+    if (vid.currentTime < (vid.duration || Infinity)) {
+      overlay.style.display = "flex";
+    }
   });
 
   vid.addEventListener("play", () => overlay.style.display = "none");
