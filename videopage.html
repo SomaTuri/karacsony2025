@@ -8,13 +8,18 @@
       font-family: Arial, sans-serif;
       background: #000;
       color: #fff;
+      height: 100vh;
+    }
+
+    /* Gate screen */
+    #gate {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      text-align: center;
+      padding: 24px;
     }
-
-    #gate { text-align: center; padding: 24px; }
 
     input {
       font-size: 20px;
@@ -32,61 +37,115 @@
 
     #hint { opacity: 0.9; margin-top: 14px; }
 
-    video {
-      width: 100vw;
-      height: 100vh;
-      max-width: 100%;
-      max-height: 100%;
+    /* Video screen */
+    #player {
       display: none;
+      position: fixed;
+      inset: 0;
       background: #000;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
       object-fit: contain;
+      background: #000;
+    }
+
+    /* Tap-to-play overlay */
+    #overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.25);
+      color: white;
+      font-size: 22px;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    #overlay .btn {
+      padding: 14px 18px;
+      border: 2px solid rgba(255,255,255,0.9);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.35);
     }
   </style>
 </head>
 <body>
 
 <div id="gate">
-  <h2>Enter code</h2>
-  <input type="password" id="codeInput" inputmode="numeric" />
-  <br>
-  <button id="submitBtn">Submit</button>
-  <p id="error" style="color:#ff6b6b;"></p>
-  <p id="hint">After unlocking, tap ▶ to play.</p>
+  <div>
+    <h2>Enter code</h2>
+    <input type="password" id="codeInput" inputmode="numeric" />
+    <br>
+    <button id="submitBtn">Submit</button>
+    <p id="error" style="color:#ff6b6b;"></p>
+    <p id="hint">After unlocking, tap to play.</p>
+  </div>
 </div>
 
-<video id="secretVideo" controls playsinline preload="metadata">
-  <source src="output.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<div id="player">
+  <video id="secretVideo" controls playsinline preload="metadata">
+    <!-- Use the full URL to remove any path weirdness -->
+    <source src="https://somaturi.github.io/karacsony2025/output.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div id="overlay">
+    <div class="btn">▶ Tap to play</div>
+  </div>
+</div>
 
 <script>
-  const correctCode = "4729"; // <-- change this
+  const correctCode = "4729";
 
   const gate = document.getElementById("gate");
   const input = document.getElementById("codeInput");
   const error = document.getElementById("error");
-  const vid = document.getElementById("secretVideo");
   const btn = document.getElementById("submitBtn");
 
-  function checkCode() {
+  const player = document.getElementById("player");
+  const vid = document.getElementById("secretVideo");
+  const overlay = document.getElementById("overlay");
+
+  function unlock() {
     const entered = input.value.trim();
     if (entered === correctCode) {
       gate.style.display = "none";
-      vid.style.display = "block";
+      player.style.display = "block";
 
-      // Ensure it is ALWAYS tap-to-play:
+      // Always start paused until user taps overlay
       vid.pause();
-      vid.currentTime = 0; // optional: start from beginning
-      // IMPORTANT: do NOT call vid.play()
+      vid.currentTime = 0;
     } else {
       error.textContent = "Incorrect code";
     }
   }
 
-  btn.addEventListener("click", checkCode);
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") checkCode();
+  btn.addEventListener("click", unlock);
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") unlock(); });
+
+  // Tap-to-play (user gesture)
+  overlay.addEventListener("click", async () => {
+    try {
+      await vid.play();  // allowed because it's triggered by a tap
+      overlay.style.display = "none";
+    } catch (e) {
+      // If something blocks playback, leave overlay visible
+      console.log(e);
+    }
   });
+
+  // If user pauses, show overlay again (optional)
+  vid.addEventListener("pause", () => {
+    // Only show overlay if not at the very end
+    if (vid.currentTime < (vid.duration || Infinity)) overlay.style.display = "flex";
+  });
+
+  vid.addEventListener("play", () => overlay.style.display = "none");
 </script>
 
 </body>
