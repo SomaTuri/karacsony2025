@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="hu">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
@@ -21,7 +22,7 @@
     input {
       font-size: 20px;
       padding: 10px;
-      width: 120px;
+      width: 160px;
       text-align: center;
     }
 
@@ -42,27 +43,27 @@
 <body>
 
 <div id="gate">
-  <h2>Enter code</h2>
-  <input type="password" id="codeInput" />
+  <h2>Írd be a kódot!</h2>
+  <input type="password" id="codeInput" autocomplete="off" />
   <br>
-  <button onclick="checkCode()">Submit</button>
+  <button onclick="checkCode()">OK</button>
   <p id="error" style="color:red;"></p>
 </div>
 
-<img id="secretImage" src="IMG-20251223-WA0080.jpg">
+<img id="secretImage" src="apa_1.png" alt="Rejtett kép">
 
 <script>
-  const correctCode = "4729"; // <-- CHANGE THIS
+  // 👇 CHOOSE ANY combination of letters and numbers
+  const correctCode = "KAR2025A";   // example: letters + numbers
 
   function checkCode() {
-    const input = document.getElementById("codeInput").value;
+    const input = document.getElementById("codeInput").value.trim();
     if (input === correctCode) {
       document.getElementById("gate").style.display = "none";
-      const img = document.getElementById("secretImage");
-      img.style.display = "block";
+      document.getElementById("secretImage").style.display = "block";
       document.body.style.background = "black";
     } else {
-      document.getElementById("error").textContent = "Incorrect code";
+      document.getElementById("error").textContent = "Hibás kód";
     }
   }
 </script>
