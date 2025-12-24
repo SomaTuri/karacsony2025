@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #gate { text-align: center; padding: 24px; }
+
+    input {
+      font-size: 20px;
+      padding: 10px;
+      width: 160px;
+      text-align: center;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 10px 18px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    #hint { opacity: 0.9; margin-top: 14px; }
+
+    video {
+      width: 100vw;
+      height: 100vh;
+      max-width: 100%;
+      max-height: 100%;
+      display: none;
+      background: #000;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+
+<div id="gate">
+  <h2>Enter code</h2>
+  <input type="password" id="codeInput" inputmode="numeric" />
+  <br>
+  <button id="submitBtn">Submit</button>
+  <p id="error" style="color:#ff6b6b;"></p>
+  <p id="hint">After unlocking, tap ▶ to play.</p>
+</div>
+
+<video id="secretVideo" controls playsinline preload="metadata">
+  <source src="output.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+<script>
+  const correctCode = "4729"; // <-- change this
+
+  const gate = document.getElementById("gate");
+  const input = document.getElementById("codeInput");
+  const error = document.getElementById("error");
+  const vid = document.getElementById("secretVideo");
+  const btn = document.getElementById("submitBtn");
+
+  function checkCode() {
+    const entered = input.value.trim();
+    if (entered === correctCode) {
+      gate.style.display = "none";
+      vid.style.display = "block";
+
+      // Ensure it is ALWAYS tap-to-play:
+      vid.pause();
+      vid.currentTime = 0; // optional: start from beginning
+      // IMPORTANT: do NOT call vid.play()
+    } else {
+      error.textContent = "Incorrect code";
+    }
+  }
+
+  btn.addEventListener("click", checkCode);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") checkCode();
+  });
+</script>
+
+</body>
+</html>
