@@ -18,14 +18,42 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      text-align: center;
       padding: 24px;
+      gap: 28px;
+    }
+
+    /* Left image */
+    #leftPanel {
+      flex: 0 0 42%;
+      max-width: 520px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #leftPanel img {
+      width: 100%;
+      height: auto;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 14px;
+    }
+
+    /* Right (code) panel */
+    #rightPanel {
+      flex: 0 0 38%;
+      min-width: 260px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding-left: 20px; /* slight shift right */
     }
 
     input {
       font-size: 20px;
       padding: 10px;
-      width: 160px;
+      width: 180px;
       text-align: center;
     }
 
@@ -73,18 +101,41 @@
       border-radius: 12px;
       background: rgba(0,0,0,0.35);
     }
+
+    /* Mobile: stack image above code */
+    @media (max-width: 800px) {
+      #gate {
+        flex-direction: column;
+        gap: 18px;
+      }
+      #leftPanel, #rightPanel {
+        flex: none;
+        width: 100%;
+        max-width: 520px;
+        padding-left: 0;
+      }
+      #leftPanel img {
+        max-height: 45vh;
+      }
+    }
   </style>
 </head>
 <body>
 
 <div id="gate">
-  <div>
-    <h2>Írd be a kódot!</h2>
-    <input type="password" id="codeInput" inputmode="numeric" />
-    <br>
-    <button id="submitBtn">OK</button>
-    <p id="error" style="color:#ff6b6b;"></p>
-    <p id="hint">Feloldás után koppints a lejátszáshoz.</p>
+  <div id="leftPanel">
+    <img src="bal.jpg" alt="Kép">
+  </div>
+
+  <div id="rightPanel">
+    <div>
+      <h2>Írd be a kódot!</h2>
+      <input type="password" id="codeInput" inputmode="numeric" />
+      <br>
+      <button id="submitBtn">OK</button>
+      <p id="error" style="color:#ff6b6b;"></p>
+      <p id="hint">Feloldás után koppints a lejátszáshoz.</p>
+    </div>
   </div>
 </div>
 
